@@ -10,7 +10,7 @@ class IntentDatabase {
     loadDefault() {
         const defaultData = `greeting|halo,hai,pagi,salam,selamat pagi,selamat sore,selamat malam,apa kabar,gimana|Halo! Bagaimana kabar Anda?
 greeting|assalamu alaikum,assalamualaikum,salam sejahtera|Walaikum assalam! Apa yang bisa saya bantu?
-farewell|bye,sampai jumpa,goodbye,goodbye,dada,dadah,sampai nanti,see you|Sampai jumpa! Semoga hari Anda menyenangkan.
+farewell|bye,sampai jumpa,goodbye,dada,dadah,sampai nanti,see you|Sampai jumpa! Semoga hari Anda menyenangkan.
 farewell|terima kasih,thanks,makasih,tq|Sama-sama! Senang berbicara dengan Anda.
 joke|buat joke,lawak,humor,bercanda|Kenapa ayam menyeberang? Karena di seberang ada KFC!
 joke|joke lagi,humor lagi|Programmer itu seperti obat, jika dosisnya salah maka hasil yang diperoleh bukan obat tapi racun.
@@ -49,29 +49,53 @@ status|kamu OK,kamu baik baik saja|Ya, saya dalam kondisi prima! Siap membantu A
     }
 
     getResponse(input, mode = 'intent') {
+        const result = this.getResponseWithConfidence(input, mode);
+        return result.response;
+    }
+
+    getResponseWithConfidence(input, mode = 'intent') {
         const inputLower = input.toLowerCase();
         
         if (mode === 'rule-based') {
-            return this.getResponseRuleBased(inputLower);
+            return this.getResponseRuleBasedWithConfidence(inputLower);
         } else if (mode === 'intent-based') {
-            return this.getResponseIntentBased(inputLower);
+            return this.getResponseIntentBasedWithConfidence(inputLower);
         }
         
-        return "Maaf, saya tidak memahami pertanyaan Anda. Coba ulangi dengan cara berbeda.";
+        return {
+            response: "Maaf, saya tidak memahami pertanyaan Anda. Coba ulangi dengan cara berbeda.",
+            confidence: 0
+        };
     }
 
     getResponseRuleBased(input) {
+        const result = this.getResponseRuleBasedWithConfidence(input);
+        return result.response;
+    }
+
+    getResponseRuleBasedWithConfidence(input) {
         for (const intent of this.intents) {
             for (const pattern of intent.patterns) {
                 if (input.includes(pattern)) {
-                    return this.selectRandomResponse(intent.responses);
+                    return {
+                        response: this.selectRandomResponse(intent.responses),
+                        confidence: 1.0
+                    };
                 }
             }
         }
-        return "Maaf, saya tidak memahami pertanyaan Anda. Coba ulangi dengan cara berbeda.";
+        return {
+            response: "Maaf, saya tidak memahami pertanyaan Anda. Coba ulangi dengan cara berbeda.",
+            confidence: 0
+        };
     }
 
     getResponseIntentBased(input) {
+        const result = this.getResponseIntentBasedWithConfidence(input);
+        return result.response;
+    }
+
+    getResponseIntentBasedWithConfidence(input) {
         let bestMatch = null;
         let bestScore = 0;
 
@@ -86,10 +110,16 @@ status|kamu OK,kamu baik baik saja|Ya, saya dalam kondisi prima! Siap membantu A
         }
 
         if (bestScore > 0.3) {
-            return this.selectRandomResponse(bestMatch.responses);
+            return {
+                response: this.selectRandomResponse(bestMatch.responses),
+                confidence: bestScore
+            };
         }
         
-        return "Maaf, saya tidak memahami pertanyaan Anda. Coba ulangi dengan cara berbeda.";
+        return {
+            response: "Maaf, saya tidak memahami pertanyaan Anda. Coba ulangi dengan cara berbeda.",
+            confidence: bestScore
+        };
     }
 
     calculateSimilarity(str1, str2) {
