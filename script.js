@@ -11,6 +11,8 @@ class ChatbotApp {
         this.userColor = '#4CAF50';
         this.botColor = '#2196F3';
         this.theme = 'light';
+        this.cseId = '539db1daf7a944bad'; // Default Google CSE ID
+        this.confidenceThreshold = 0.3; // Threshold untuk trigger search modal
 
         this.initializeDOMElements();
         this.attachEventListeners();
@@ -28,6 +30,7 @@ class ChatbotApp {
         this.themeSelect = document.getElementById('theme');
         this.apiKeyInput = document.getElementById('apiKey');
         this.databaseInput = document.getElementById('database');
+        this.cseIdInput = document.getElementById('cseId');
         this.saveSettingBtn = document.getElementById('saveSetting');
         this.resetChatBtn = document.getElementById('resetChat');
 
@@ -37,6 +40,10 @@ class ChatbotApp {
         this.sendBtn = document.getElementById('sendBtn');
         this.downloadBtn = document.getElementById('downloadBtn');
         this.typingIndicator = document.getElementById('typingIndicator');
+
+        // Search Modal
+        this.searchModal = document.getElementById('searchModal');
+        this.closeSearchBtn = document.getElementById('closeSearch');
     }
 
     attachEventListeners() {
@@ -49,6 +56,10 @@ class ChatbotApp {
             if (e.key === 'Enter') this.sendMessage();
         });
         this.databaseInput.addEventListener('change', (e) => this.handleDatabaseUpload(e));
+        this.closeSearchBtn.addEventListener('click', () => this.closeSearchModal());
+        this.searchModal.addEventListener('click', (e) => {
+            if (e.target === this.searchModal) this.closeSearchModal();
+        });
     }
 
     toggleSettings() {
@@ -60,6 +71,7 @@ class ChatbotApp {
         this.userColor = this.userColorInput.value;
         this.botColor = this.botColorInput.value;
         this.theme = this.themeSelect.value;
+        this.cseId = this.cseIdInput.value || '539db1daf7a944bad';
         const apiKey = this.apiKeyInput.value.trim();
         
         if (apiKey) {
@@ -68,7 +80,7 @@ class ChatbotApp {
             this.addMessage('Bot', 'Mode LLM diaktifkan! Saya siap menggunakan OpenAI API.', 'bot');
         } else {
             this.mode = 'intent-based';
-            this.addMessage('Bot', 'Mode Intent-Based diaktifkan. Chatbot berbasis aturan siap digunakan.', 'bot');
+            this.addMessage('Bot', 'Mode Intent-Based diaktifkan. Chatbot berbasis aturan siap digunakan. Jika saya tidak tahu, saya akan tawarkan pencarian Google.', 'bot');
         }
 
         this.applyTheme();
@@ -78,7 +90,8 @@ class ChatbotApp {
             userColor: this.userColor,
             botColor: this.botColor,
             theme: this.theme,
-            mode: this.mode
+            mode: this.mode,
+            cseId: this.cseId
         }));
 
         this.settingsPanel.classList.remove('active');
@@ -94,11 +107,13 @@ class ChatbotApp {
             this.botColor = settings.botColor;
             this.theme = settings.theme;
             this.mode = settings.mode;
+            this.cseId = settings.cseId || '539db1daf7a944bad';
 
             this.botNameInput.value = this.botName;
             this.userColorInput.value = this.userColor;
             this.botColorInput.value = this.botColor;
             this.themeSelect.value = this.theme;
+            this.cseIdInput.value = this.cseId;
 
             this.applyTheme();
             this.applyChatColors();
@@ -156,11 +171,15 @@ class ChatbotApp {
 
         // Get bot response
         let response;
+        let isConfident = true;
+        
         try {
             if (this.mode === 'llm') {
                 response = await this.llm.getResponse(message);
             } else {
-                response = this.intents.getResponse(message, this.mode);
+                const result = this.intents.getResponseWithConfidence(message, this.mode);
+                response = result.response;
+                isConfident = result.confidence > this.confidenceThreshold;
             }
         } catch (error) {
             response = 'Error: Terjadi kesalahan. ' + error.message;
@@ -172,6 +191,27 @@ class ChatbotApp {
         // Add bot message with delay
         setTimeout(() => {
             this.addMessage(this.botName, response, 'bot');
+            
+            // Jika tidak percaya diri, tawarkan search
+            if (!isConfident && this.mode !== 'llm') {
+                setTimeout(() => {
+                    this.addMessage(this.botName, 'Saya tidak yakin dengan jawaban di atas. Apakah Anda ingin saya cari di Google? 🔍', 'bot');
+                    
+                    // Tambahkan tombol search
+                    const messageDiv = this.chatMessages.lastChild;
+                    const searchBtn = document.createElement('button');
+                    searchBtn.textContent = 'Cari di Google';
+                    searchBtn.style.marginTop = '10px';
+                    searchBtn.style.padding = '8px 16px';
+                    searchBtn.style.backgroundColor = '#ff9800';
+                    searchBtn.style.color = 'white';
+                    searchBtn.style.border = 'none';
+                    searchBtn.style.borderRadius = '5px';
+                    searchBtn.style.cursor = 'pointer';
+                    searchBtn.addEventListener('click', () => this.openSearchModal(message));
+                    messageDiv.querySelector('.message-content').appendChild(searchBtn);
+                }, 500);
+            }
         }, 300);
     }
 
@@ -207,6 +247,25 @@ class ChatbotApp {
 
     hideTypingIndicator() {
         this.typingIndicator.classList.remove('active');
+    }
+
+    openSearchModal(query) {
+        this.searchModal.classList.add('active');
+        // Trigger Google Search dengan query
+        if (window.google && window.google.search && window.google.search.cse) {
+            window.google.search.cse.element.render({
+                gss: '.gss_branding'
+            });
+            // Set query
+            const searchInput = document.querySelector('.gss_search input');
+            if (searchInput) {
+                searchInput.value = query;
+            }
+        }
+    }
+
+    closeSearchModal() {
+        this.searchModal.classList.remove('active');
     }
 
     resetChat() {
