@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chatbot-container">
+        <!-- Header -->
+        <div class="chatbot-header">
+            <div class="header-content">
+                <h1>AI Chatbot Assistant</h1>
+                <p class="status">Online</p>
+            </div>
+            <button class="settings-btn" id="settingsBtn">⚙️</button>
+        </div>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-content">
+                <h3>Pengaturan</h3>
+                
+                <div class="setting-group">
+                    <label for="botName">Nama Bot:</label>
+                    <input type="text" id="botName" value="Assistant" placeholder="Masukkan nama bot">
+                </div>
+
+                <div class="setting-group">
+                    <label for="userColor">Warna Pesan User:</label>
+                    <input type="color" id="userColor" value="#4CAF50">
+                </div>
+
+                <div class="setting-group">
+                    <label for="botColor">Warna Pesan Bot:</label>
+                    <input type="color" id="botColor" value="#2196F3">
+                </div>
+
+                <div class="setting-group">
+                    <label for="theme">Tema:</label>
+                    <select id="theme">
+                        <option value="light">Terang</option>
+                        <option value="dark">Gelap</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label for="apiKey">OpenAI API Key (Opsional):</label>
+                    <input type="password" id="apiKey" placeholder="sk-...">
+                    <small>Kosongkan untuk mode chatbot berbasis aturan</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="database">Upload Custom Database (TXT):</label>
+                    <input type="file" id="database" accept=".txt">
+                    <small>Format: intent|pattern1,pattern2|response</small>
+                </div>
+
+                <button class="btn-save" id="saveSetting">Simpan Pengaturan</button>
+                <button class="btn-reset" id="resetChat">Reset Chat</button>
+            </div>
+        </div>
+
+        <!-- Chat History -->
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="message-content">
+                    <p>Halo! Saya adalah AI Assistant Anda. Bagaimana saya bisa membantu Anda hari ini?</p>
+                </div>
+                <span class="message-time">Sekarang</span>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chatbot-input-area">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Ketik pesan Anda di sini..." 
+                autocomplete="off"
+            >
+            <button class="send-btn" id="sendBtn">Kirim</button>
+            <button class="download-btn" id="downloadBtn" title="Download Chat History">⬇️</button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

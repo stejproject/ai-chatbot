@@ -1,0 +1,18 @@
+greeting|halo,hai,pagi,salam,selamat pagi,selamat sore,selamat malam,apa kabar,gimana|Halo! Bagaimana kabar Anda?
+greeting|assalamu alaikum,assalamualaikum,salam sejahtera|Walaikum assalam! Apa yang bisa saya bantu?
+farewell|bye,sampai jumpa,goodbye,dada,dadah,sampai nanti,see you|Sampai jumpa! Semoga hari Anda menyenangkan.
+farewell|terima kasih,thanks,makasih,tq|Sama-sama! Senang berbicara dengan Anda.
+joke|buat joke,lawak,humor,bercanda|Kenapa ayam menyeberang? Karena di seberang ada KFC!
+joke|joke lagi,humor lagi|Programmer itu seperti obat, jika dosisnya salah maka hasil yang diperoleh bukan obat tapi racun.
+help|bantuan,help,apa saja yang bisa kamu lakukan,fitur apa|Saya bisa membantu dengan:
+- Menjawab pertanyaan umum
+- Memberikan informasi
+- Membuat jokes
+- Chat santai
+- Dan banyak lagi! Coba tanyakan sesuatu!
+help|siapa kamu,who are you,apa nama mu|Saya adalah AI Chatbot Assistant. Saya di sini untuk membantu dan menemani Anda.
+weather|cuaca hari ini,berapa suhu,bagaimana cuaca,weather today|Maaf, saya tidak memiliki akses data cuaca real-time. Silakan periksa aplikasi cuaca atau weather.com
+time|jam berapa,berapa jam,what time|Saya tidak bisa memberitahu waktu secara akurat, silakan lihat jam di perangkat Anda.
+name|siapa nama mu,nama mu siapa,nama kamu|Nama saya adalah Assistant. Anda bisa menggantinya di pengaturan!
+status|apa kabar,bagaimana kabar mu,bagaimana keadaan mu|Saya baik-baik saja! Terima kasih sudah bertanya. Bagaimana dengan Anda?
+status|kamu OK,kamu baik baik saja|Ya, saya dalam kondisi prima! Siap membantu Anda kapan saja.
