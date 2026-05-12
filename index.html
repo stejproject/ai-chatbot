@@ -58,6 +58,12 @@
                     <small>Format: intent|pattern1,pattern2|response</small>
                 </div>
 
+                <div class="setting-group">
+                    <label for="cseId">Google CSE ID (Opsional):</label>
+                    <input type="text" id="cseId" placeholder="Masukkan CSE ID">
+                    <small>Untuk search engine fallback</small>
+                </div>
+
                 <button class="btn-save" id="saveSetting">Simpan Pengaturan</button>
                 <button class="btn-reset" id="resetChat">Reset Chat</button>
             </div>
@@ -78,6 +84,21 @@
             <span></span>
             <span></span>
             <span></span>
+        </div>
+
+        <!-- Search Engine Modal -->
+        <div class="search-modal" id="searchModal">
+            <div class="search-modal-content">
+                <button class="close-search" id="closeSearch">&times;</button>
+                <h3>Tidak menemukan jawaban di database. Cari di Google:</h3>
+                <div class="search-container">
+                    <script async src="https://cse.google.com/cse.js?cx=539db1daf7a944bad"></script>
+                    <div class="gcse-searchbox"></div>
+                    <div style="border-radius: 10px; border: 2px solid #ddd; margin-top: 15px;">
+                        <div class="gcse-searchresults"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Input Area -->
